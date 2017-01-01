@@ -30,6 +30,8 @@ import {WorkingSet} from '../../nuclide-working-sets-common';
 import {REVEAL_FILE_ON_SWITCH_SETTING, WORKSPACE_VIEW_URI} from './Constants';
 import {React} from 'react-for-atom';
 
+export {consumeElementIcons} from '../components/FileTreeEntryComponent';
+
 type SerializedState = {
   tree: ExportStoreData,
   restored: ?boolean,

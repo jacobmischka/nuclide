@@ -12,6 +12,7 @@ import type {FileTreeNode} from '../lib/FileTreeNode';
 
 import FileTreeActions from '../lib/FileTreeActions';
 import {React, ReactDOM} from 'react-for-atom';
+import {Disposable} from 'atom';
 import classnames from 'classnames';
 import fileTypeClass from '../../commons-atom/file-type-class';
 import {nextAnimationFrame} from '../../commons-node/observable';
@@ -41,6 +42,8 @@ type SelectionMode = 'single-select' | 'multi-select' | 'range-select' | 'invali
 const SUBSEQUENT_FETCH_SPINNER_DELAY = 500;
 const INITIAL_FETCH_SPINNER_DELAY = 25;
 const INDENT_LEVEL = 17;
+
+let addIconToElement;
 
 export class FileTreeEntryComponent extends React.Component {
   state: State;
@@ -113,6 +116,10 @@ export class FileTreeEntryComponent extends React.Component {
       Observable.fromEvent(el, 'dragover').subscribe(this._onDragOver),
       Observable.fromEvent(el, 'drop').subscribe(this._onDrop),
     );
+
+    if (addIconToElement) {
+      addIconToElement(this._pathContainer, this.props.node.uri);
+    }
   }
 
   componentWillUnmount(): void {
@@ -434,4 +441,14 @@ function getSelectionMode(event: SyntheticMouseEvent): SelectionMode {
     return 'single-select';
   }
   return 'invalid-select';
+}
+
+export function consumeElementIcons(
+  cb: (domElement: HTMLElement, path: string) => Disposable,
+): Disposable {
+  (addIconToElement: (domElement: HTMLElement, path: string) => Disposable) = cb;
+
+  return new Disposable(() => {
+    addIconToElement = null;
+  });
 }

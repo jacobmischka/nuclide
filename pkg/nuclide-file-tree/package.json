@@ -24,6 +24,11 @@
       "versions": {
         "0.0.0": "consumeRemoteProjectsService"
       }
+    },
+    "file-icons.element-icons": {
+      "versions": {
+        "1.0.0": "consumeElementIcons"
+      }
     }
   },
   "providedServices": {
