@@ -84,6 +84,18 @@ export class FileTreeEntryComponent extends React.Component {
     );
   }
 
+  componentWillUpdate(nextProps: Props) {
+    if (nextProps.node.uri !== this.props.node.uri && this._iconDisposable != null) {
+      this._iconDisposable.dispose();
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.node.uri !== this.props.node.uri && addIconToElement != null) {
+      this._iconDisposable = addIconToElement(this._pathContainer, this.props.node.uri);
+    }
+  }
+
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.node.isLoading) {
       const spinnerDelay = nextProps.node.wasFetched ?
@@ -117,8 +129,8 @@ export class FileTreeEntryComponent extends React.Component {
       Observable.fromEvent(el, 'drop').subscribe(this._onDrop),
     );
 
-    if (addIconToElement) {
-      addIconToElement(this._pathContainer, this.props.node.uri);
+    if (addIconToElement != null) {
+      this._iconDisposable = addIconToElement(this._pathContainer, this.props.node.uri);
     }
   }
 
@@ -127,6 +139,10 @@ export class FileTreeEntryComponent extends React.Component {
     this._disposables.dispose();
     if (this._loadingTimeout != null) {
       clearTimeout(this._loadingTimeout);
+    }
+
+    if (this._iconDisposable != null) {
+      this._iconDisposable.dispose();
     }
   }
 
